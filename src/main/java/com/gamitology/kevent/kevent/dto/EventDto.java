@@ -1,6 +1,7 @@
 package com.gamitology.kevent.kevent.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class EventDto {
     private String name;

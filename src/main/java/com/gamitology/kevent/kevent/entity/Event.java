@@ -1,7 +1,8 @@
 package com.gamitology.kevent.kevent.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Event extends BaseEntity {
@@ -11,6 +12,13 @@ public class Event extends BaseEntity {
     private Date performTime;
     private Date ticketStartTime;
     private Date ticketEndTime;
+
+    @OneToMany(
+            cascade = CascadeType.ALL
+//            orphanRemoval = true
+    )
+    @JoinTable(name = "event_artist", inverseJoinColumns=@JoinColumn(name = "id"))
+    private List<EventArtist> eventArtists;
 
     public String getName() {
         return name;
@@ -58,5 +66,13 @@ public class Event extends BaseEntity {
 
     public void setTicketEndTime(Date ticketEndTime) {
         this.ticketEndTime = ticketEndTime;
+    }
+
+    public List<EventArtist> getEventArtists() {
+        return eventArtists;
+    }
+
+    public void setEventArtists(List<EventArtist> eventArtists) {
+        this.eventArtists = eventArtists;
     }
 }

@@ -1,6 +1,7 @@
 package com.gamitology.kevent.kevent.controller;
 
 import com.gamitology.kevent.kevent.dto.EventDto;
+import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.entity.Event;
 import com.gamitology.kevent.kevent.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,22 @@ public class EventController {
         return eventService.getAllEvents();
     }
 
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Event> getEventById(@PathVariable("eventId") long eventid) {
+        return ResponseEntity.ok(eventService.getEventById(eventid));
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Event> addEvent(@Valid @RequestBody EventDto eventDto) {
         Event savedEvent = eventService.addEvent(eventDto);
         return new ResponseEntity<>(savedEvent, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{eventId}/updateArtists")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<String> updateArtists(@PathVariable("eventId") long eventId, @Valid @RequestBody List<EventArtistDto> eventArtists) {
+        return eventService.updateArtists(eventId, eventArtists);
     }
 
 }
