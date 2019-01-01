@@ -12,5 +12,6 @@ public interface EventService {
     List<Event> getAllEvents();
     Event getEventById(long id);
     Event addEvent(EventDto eventDto);
+    Event updateEvent(long id, EventDto eventDto);
     ResponseEntity<String> updateArtists(long id, List<EventArtistDto> eventArtists);
 }

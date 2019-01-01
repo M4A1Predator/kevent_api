@@ -49,6 +49,22 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
+    public Event updateEvent(long id, EventDto eventDto) {
+        Event event = eventRepository.findById(id);
+        if (event == null) {
+            return null;
+        }
+
+        event.setName(eventDto.getName());
+        event.setDescription(eventDto.getDescription());
+        event.setLocation(eventDto.getDescription());
+        event.setPerformTime(event.getPerformTime());
+        Event savedEvent = eventRepository.save(event);
+        return savedEvent;
+    }
+
+    @Transactional
+    @Override
     public ResponseEntity<String> updateArtists(long id, List<EventArtistDto> eventArtists) {
         // Get event
         Event event = eventRepository.findById(id);

@@ -30,6 +30,13 @@ public class EventController {
         return ResponseEntity.ok(eventService.getEventById(eventid));
     }
 
+    @PutMapping("/{eventId}")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<Event> updateEventById(@PathVariable("eventId") long eventId, @Valid @RequestBody EventDto eventDto) {
+        Event savedEvent = eventService.updateEvent(eventId, eventDto);
+        return ResponseEntity.ok(savedEvent);
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Event> addEvent(@Valid @RequestBody EventDto eventDto) {

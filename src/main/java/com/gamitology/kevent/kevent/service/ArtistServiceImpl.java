@@ -28,7 +28,26 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
+    public Artist updateArtist(long id, ArtistDto artistDto) {
+        Artist artist = artistRepository.findById(id).get();
+        if (artist == null) {
+            return null;
+        }
+
+        artist.setName(artistDto.getName());
+        artist.setName(artistDto.getDetail());
+
+        Artist updatedArtist = artistRepository.save(artist);
+        return updatedArtist;
+    }
+
+    @Override
     public List<Artist> getAllArtists() {
         return artistRepository.findAll();
+    }
+
+    @Override
+    public Artist getArtistById(long id) {
+        return artistRepository.findById(id).get();
     }
 }
