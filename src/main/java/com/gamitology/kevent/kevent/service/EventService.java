@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
+import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.entity.Event;
 import org.springframework.http.ResponseEntity;
 
@@ -12,6 +13,6 @@ public interface EventService {
     List<Event> getAllEvents();
     Event getEventById(long id);
     Event addEvent(EventDto eventDto);
-    Event updateEvent(long id, EventDto eventDto);
+    Event updateEvent(long id, UpdateEventRequest eventDto);
     ResponseEntity<String> updateArtists(long id, List<EventArtistDto> eventArtists);
 }

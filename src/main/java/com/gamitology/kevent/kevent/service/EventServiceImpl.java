@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
+import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.entity.Artist;
 import com.gamitology.kevent.kevent.entity.Event;
 import com.gamitology.kevent.kevent.entity.EventArtist;
@@ -49,15 +50,15 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public Event updateEvent(long id, EventDto eventDto) {
+    public Event updateEvent(long id, UpdateEventRequest updateEventRequest) {
         Event event = eventRepository.findById(id);
         if (event == null) {
             return null;
         }
 
-        event.setName(eventDto.getName());
-        event.setDescription(eventDto.getDescription());
-        event.setLocation(eventDto.getDescription());
+        event.setName(updateEventRequest.getName());
+        event.setDescription(updateEventRequest.getDescription());
+        event.setLocation(updateEventRequest.getLocation());
         event.setPerformTime(event.getPerformTime());
         Event savedEvent = eventRepository.save(event);
         return savedEvent;
