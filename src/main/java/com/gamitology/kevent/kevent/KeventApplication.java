@@ -1,10 +1,14 @@
 package com.gamitology.kevent.kevent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.codehaus.jackson.map.util.ISO8601DateFormat;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -17,17 +21,21 @@ public class KeventApplication {
 		SpringApplication.run(KeventApplication.class, args);
 	}
 
+	private static final Logger logger = LogManager.getLogger(KeventApplication.class);
+
 	@PostConstruct
 	public void init(){
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Bangkok"));
 		System.out.println("Spring boot application running in UTC timezone :"+new Date());   // It will print UTC timezone
 	}
 
-	@Bean
-	public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization() {
-        return jacksonObjectMapperBuilder ->
-				jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("Asia/Bangkok"));
-	}
+//	@Bean
+//	public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization() {
+//        return jacksonObjectMapperBuilder -> {
+//			jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("Asia/Bangkok"));
+////			jacksonObjectMapperBuilder.dateFormat(new ISO8601DateFormat());
+//		};
+//	}
 
 	@Bean
 	public ModelMapper modelMapper() {

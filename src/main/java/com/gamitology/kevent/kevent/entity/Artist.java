@@ -1,9 +1,12 @@
 package com.gamitology.kevent.kevent.entity;
 
 import io.micrometer.core.lang.Nullable;
+import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
+@Data
 @Entity
 public class Artist extends BaseEntity {
 
@@ -12,19 +15,6 @@ public class Artist extends BaseEntity {
     @Nullable
     private String detail;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
+    @Column(name = "is_active")
+    private boolean active;
 }

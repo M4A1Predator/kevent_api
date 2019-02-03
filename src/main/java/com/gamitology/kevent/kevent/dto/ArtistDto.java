@@ -1,22 +1,12 @@
 package com.gamitology.kevent.kevent.dto;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+
+@Data
 public class ArtistDto {
+    @NotNull
     private String name;
     private String detail;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
 }

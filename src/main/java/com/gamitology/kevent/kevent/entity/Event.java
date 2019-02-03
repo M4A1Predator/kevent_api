@@ -1,5 +1,9 @@
 package com.gamitology.kevent.kevent.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gamitology.kevent.kevent.constant.DateFormatConstant;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +13,7 @@ public class Event extends BaseEntity {
     private String name;
     private String description;
     private String location;
+    @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date performTime;
     private Date ticketStartTime;
     private Date ticketEndTime;
