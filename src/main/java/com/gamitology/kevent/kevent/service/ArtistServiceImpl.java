@@ -1,6 +1,7 @@
 package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.dto.ArtistDto;
+import com.gamitology.kevent.kevent.dto.request.UpdateArtistRequest;
 import com.gamitology.kevent.kevent.entity.Artist;
 import com.gamitology.kevent.kevent.repository.ArtistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,14 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Artist updateArtist(long id, ArtistDto artistDto) {
+    public Artist updateArtist(Long id, UpdateArtistRequest updateArtistRequest) {
         Artist artist = artistRepository.findById(id).get();
         if (artist == null) {
             return null;
         }
 
-        artist.setName(artistDto.getName());
-        artist.setName(artistDto.getDetail());
+        artist.setName(updateArtistRequest.getName());
+        artist.setDetail(updateArtistRequest.getDetail());
 
         Artist updatedArtist = artistRepository.save(artist);
         return updatedArtist;

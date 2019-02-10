@@ -15,7 +15,9 @@ public class Event extends BaseEntity {
     private String location;
     @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date performTime;
+    @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date ticketStartTime;
+    @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date ticketEndTime;
 
     @OneToMany(

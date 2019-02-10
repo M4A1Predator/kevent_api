@@ -1,6 +1,7 @@
 package com.gamitology.kevent.kevent.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gamitology.kevent.kevent.constant.DateFormatConstant;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -17,11 +18,13 @@ public abstract class BaseEntity {
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
 //    @JsonFormat(timezone = "GMT+07:00")
+    @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date createdAt;
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
 //    @JsonFormat(timezone = "GMT+07:00")
+    @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date modifiedAt;
 
     public long getId() {
