@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gamitology.kevent.kevent.constant.DateFormatConstant;
+import org.hibernate.annotations.Immutable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -21,10 +22,11 @@ public class Event extends BaseEntity {
     private Date ticketEndTime;
 
     @OneToMany(
-            cascade = CascadeType.ALL
+            cascade = CascadeType.DETACH
 //            orphanRemoval = true
     )
     @JoinTable(name = "event_artist", inverseJoinColumns=@JoinColumn(name = "id"))
+    @Column(insertable = false, updatable = false)
     private List<EventArtist> eventArtists;
 
     public String getName() {

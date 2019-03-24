@@ -54,8 +54,9 @@ public class EventController {
 
     @PutMapping("/{eventId}/updateArtists")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<String> updateArtists(@PathVariable("eventId") long eventId, @Valid @RequestBody List<EventArtistDto> eventArtists) {
-        return eventService.updateArtists(eventId, eventArtists);
+    public ResponseEntity<Event> updateArtists(@PathVariable("eventId") long eventId, @Valid @RequestBody List<EventArtistDto> eventArtists) {
+        Event updatedEvent = eventService.updateArtists(eventId, eventArtists);
+        return ResponseEntity.ok(updatedEvent);
     }
 
 }

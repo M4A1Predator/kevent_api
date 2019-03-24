@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -68,13 +69,20 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public ResponseEntity<String> updateArtists(long id, List<EventArtistDto> eventArtists) {
+    public Event updateArtists(long id, List<EventArtistDto> eventArtists) {
         // Get event
         Event event = eventRepository.findById(id);
 
         // Create artists list
         List<EventArtist> eventArtistList = new ArrayList<>();
         for(EventArtistDto eventArtistDto: eventArtists) {
+
+            // Check duplicate
+            List<EventArtist> existArtists = event.getEventArtists().stream().filter(ea -> ea.getArtist().getId() == eventArtistDto.getArtistId()).collect(Collectors.toList());
+            if (!existArtists.isEmpty()) {
+                continue;
+            }
+
             EventArtist ea = new EventArtist();
             ea.setEvent(event);
 
@@ -88,10 +96,24 @@ public class EventServiceImpl implements EventService {
         // Update artist list
         eventArtistRepository.saveAll(eventArtistList);
 
+        List<EventArtist> currentEAList = eventArtistRepository.findByEventId(event.getId());
+
         // Event timestamp
         event.setModifiedAt(new Date());
-        eventRepository.save(event);
+        event = eventRepository.save(event);
+        event = eventRepository.findById(id);
 
-        return ResponseEntity.ok("Updated");
+        // Remove deleted one
+        for (EventArtist ea :
+                currentEAList) {
+            Optional<EventArtistDto> existArtistDto = eventArtists.stream()
+                    .filter(e -> e.getArtistId() == ea.getArtist().getId())
+                    .findFirst();
+            if (!existArtistDto.isPresent()) {
+                eventArtistRepository.delete(ea);
+            }
+        }
+
+        return event;
     }
 }

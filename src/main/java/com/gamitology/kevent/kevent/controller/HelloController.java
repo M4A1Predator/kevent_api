@@ -1,5 +1,6 @@
 package com.gamitology.kevent.kevent.controller;
 
+import com.gamitology.kevent.kevent.annotation.TestAnnotation;
 import com.gamitology.kevent.kevent.model.CustomPrincipal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import java.security.Principal;
 public class HelloController {
 
     @GetMapping
+    @TestAnnotation
     public String hello(CustomPrincipal principal) {
         Object p = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return "hello";

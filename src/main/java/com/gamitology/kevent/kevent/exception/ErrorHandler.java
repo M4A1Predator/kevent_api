@@ -17,6 +17,7 @@ public class ErrorHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ApiError> catchAll(Exception ex) {
+        ex.printStackTrace();
         ApiError apiError = new ApiError();
         apiError.setMessage(ex.getLocalizedMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
