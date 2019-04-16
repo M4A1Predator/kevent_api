@@ -2,6 +2,8 @@ package com.gamitology.kevent.kevent.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gamitology.kevent.kevent.constant.DateFormatConstant;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import lombok.Data;
 import org.hibernate.annotations.Immutable;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Data
 public class Event extends BaseEntity {
     private String name;
     private String description;
@@ -29,59 +32,9 @@ public class Event extends BaseEntity {
     @Column(insertable = false, updatable = false)
     private List<EventArtist> eventArtists;
 
-    public String getName() {
-        return name;
-    }
+    private String coverPath;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Column(name = "is_enabled")
+    private boolean enabled;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Date getPerformTime() {
-        return performTime;
-    }
-
-    public void setPerformTime(Date performTime) {
-        this.performTime = performTime;
-    }
-
-    public Date getTicketStartTime() {
-        return ticketStartTime;
-    }
-
-    public void setTicketStartTime(Date ticketStartTime) {
-        this.ticketStartTime = ticketStartTime;
-    }
-
-    public Date getTicketEndTime() {
-        return ticketEndTime;
-    }
-
-    public void setTicketEndTime(Date ticketEndTime) {
-        this.ticketEndTime = ticketEndTime;
-    }
-
-    public List<EventArtist> getEventArtists() {
-        return eventArtists;
-    }
-
-    public void setEventArtists(List<EventArtist> eventArtists) {
-        this.eventArtists = eventArtists;
-    }
 }

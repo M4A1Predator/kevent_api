@@ -34,8 +34,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     /*
-        Set current user principal as argument
-     */
+            Set current user principal as argument
+         */
     @Bean
     public HandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver() {
         return new HandlerMethodArgumentResolver() {
@@ -55,4 +55,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
             }
         };
     }
+
+
 }
