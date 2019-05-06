@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Data
 public class Event extends BaseEntity {
+
     private String name;
     private String description;
     private String location;
@@ -34,7 +35,7 @@ public class Event extends BaseEntity {
 
     private String coverPath;
 
-    @Column(name = "is_enabled")
+    @Column(name = "is_enabled", nullable = false, columnDefinition = "BIT(1) default 1")
     private boolean enabled;
 
 }

@@ -16,5 +16,5 @@ public interface EventRepository extends JpaRepository<Event, Long>, PagingAndSo
     Optional<Event> findById(long id);
     List<Event> findAll();
     List<Event> findByEnabled(boolean enabled);
-    Page<Event> findByEnabled(boolean enabled, Pageable page);
+    Page<Event> findByEnabledAndNameContaining(boolean enabled, String name, Pageable page);
 }

@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
+import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.dto.response.EventArtistResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
@@ -52,11 +53,11 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByEnabled(true);
     }
 
-    public List<EventResponse> getEventsPublic() {
+    public List<EventResponse> getEventsPublic(SearchEventRequest searchEventRequest) {
 
-        Pageable pageable = PageRequest.of(0, 5);
+        Pageable pageable = PageRequest.of(searchEventRequest.getPage() - 1, searchEventRequest.getPageSize());
 
-        Page<Event> eventPage = eventRepository.findByEnabled(true, pageable);
+        Page<Event> eventPage = eventRepository.findByEnabledAndNameContaining(true, "", pageable);
         List<Event> eventList = eventPage.get().collect(Collectors.toList());
         List<EventResponse> eventResponseList = new ArrayList<>();
         for (Event event :
@@ -92,6 +93,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event addEvent(EventDto eventDto) {
         Event event = modelMapper.map(eventDto, Event.class);
+        event.setEnabled(true);
         Event savedEvent = eventRepository.save(event);
         return savedEvent;
     }
@@ -204,5 +206,33 @@ public class EventServiceImpl implements EventService {
         }
         event.setEnabled(false);
         return eventRepository.save(event);
+    }
+
+    @Override
+    public EventResponse getEventPublic(Integer eventId) {
+
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event == null || !event.isEnabled()) {
+            return null;
+        }
+
+        // map
+        EventResponse eventResponse = new EventResponse();
+        modelMapper.map(event, eventResponse);
+
+        List<EventArtistResponse> earList = new ArrayList<>();
+        for (EventArtist ea :
+                event.getEventArtists()) {
+            EventArtistResponse ear = new EventArtistResponse();
+            ear.setArtistId((int) ea.getArtist().getId());
+            ear.setName(ea.getArtist().getName());
+            ear.setDetail(ea.getArtist().getDetail());
+            ear.setNote(ea.getNote());
+
+            earList.add(ear);
+        }
+
+        eventResponse.setEventArtistList(earList);
+        return eventResponse;
     }
 }

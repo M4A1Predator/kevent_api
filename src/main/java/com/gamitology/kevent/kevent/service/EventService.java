@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
+import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
 import com.gamitology.kevent.kevent.entity.Event;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 public interface EventService {
     List<Event> getAllEvents();
-    List<EventResponse> getEventsPublic();
+    List<EventResponse> getEventsPublic(SearchEventRequest request);
     Event getEventById(long id);
     Event addEvent(EventDto eventDto);
     Event updateEvent(long id, UpdateEventRequest eventDto);
@@ -24,4 +25,6 @@ public interface EventService {
     Event uploadCover(long eventId, MultipartFile cover) throws IOException;
     FileInputStream getCover(int eventId) throws FileNotFoundException;
     Event disableEvent(long eventId);
+
+    EventResponse getEventPublic(Integer eventId);
 }
