@@ -1,14 +1,14 @@
 package com.gamitology.kevent.kevent.dto.request;
 
 public class EventArtistDto {
-    private long artistId;
+    private Integer artistId;
     private String note;
 
-    public long getArtistId() {
+    public Integer getArtistId() {
         return artistId;
     }
 
-    public void setArtistId(long artistId) {
+    public void setArtistId(Integer artistId) {
         this.artistId = artistId;
     }
 

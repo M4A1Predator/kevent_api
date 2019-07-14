@@ -26,7 +26,7 @@ public class ArtistController {
     }
 
     @GetMapping("/{artistId}")
-    public ResponseEntity<Artist> getArtistById(@PathVariable("artistId") Long artistId) {
+    public ResponseEntity<Artist> getArtistById(@PathVariable("artistId") Integer artistId) {
         Artist artist = artistService.getArtistById(artistId);
         if (artist == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -44,7 +44,7 @@ public class ArtistController {
 
     @PutMapping("/{artistId}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Artist> updateArtist(@PathVariable("artistId") Long artistId, @Valid @RequestBody UpdateArtistRequest updateArtistRequest) {
+    public ResponseEntity<Artist> updateArtist(@PathVariable("artistId") Integer artistId, @Valid @RequestBody UpdateArtistRequest updateArtistRequest) {
         Artist updatedArtist = artistService.updateArtist(artistId, updateArtistRequest);
         if (updateArtistRequest == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

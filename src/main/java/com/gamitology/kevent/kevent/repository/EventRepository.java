@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long>, PagingAndSortingRepository<Event, Long> {
-    Optional<Event> findById(long id);
+public interface EventRepository extends JpaRepository<Event, Integer>, PagingAndSortingRepository<Event, Integer> {
+    Optional<Event> findById(Integer id);
+    Optional<Event> findByIdAndEnabledTrue(Integer id);
     List<Event> findAll();
     List<Event> findByEnabled(boolean enabled);
     Page<Event> findByEnabledAndNameContaining(boolean enabled, String name, Pageable page);

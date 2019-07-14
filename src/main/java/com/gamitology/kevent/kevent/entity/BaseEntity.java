@@ -13,7 +13,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -27,11 +27,11 @@ public abstract class BaseEntity {
     @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date modifiedAt;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

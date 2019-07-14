@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class UpdateEventRequest {
@@ -18,7 +19,8 @@ public class UpdateEventRequest {
 
 //    @JsonFormat(pattern = DateFormatConstant.ISOString)
 //    @JsonSerialize(using = CustomDateSerializer.class)
-    private Date performTime;
+//    private Date performTime;
+    private List<PerformTimeRequest> performDateTimeList;
 
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatConstant.ISOString)
     private Date ticketStartTime;

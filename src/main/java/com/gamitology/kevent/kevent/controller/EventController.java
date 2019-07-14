@@ -51,7 +51,7 @@ public class EventController {
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<Event> getEventById(@PathVariable("eventId") long eventid) {
+    public ResponseEntity<EventResponse> getEventById(@PathVariable("eventId") Integer eventid) {
         return ResponseEntity.ok(eventService.getEventById(eventid));
     }
 
@@ -71,14 +71,14 @@ public class EventController {
 
     @PutMapping("/{eventId}")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Event> updateEvent(@PathVariable("eventId") long eventId, @Valid @RequestBody UpdateEventRequest eventRequest) {
+    public ResponseEntity<Event> updateEvent(@PathVariable("eventId") Integer eventId, @Valid @RequestBody UpdateEventRequest eventRequest) {
         Event updatedEvent = eventService.updateEvent(eventId, eventRequest);
         return ResponseEntity.ok().body(updatedEvent);
     }
 
     @PutMapping("/{eventId}/updateArtists")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<Event> updateArtists(@PathVariable("eventId") long eventId, @Valid @RequestBody List<EventArtistDto> eventArtists) {
+    public ResponseEntity<Event> updateArtists(@PathVariable("eventId") Integer eventId, @Valid @RequestBody List<EventArtistDto> eventArtists) {
         Event updatedEvent = eventService.updateArtists(eventId, eventArtists);
         return ResponseEntity.ok(updatedEvent);
     }

@@ -38,4 +38,12 @@ public class Event extends BaseEntity {
     @Column(name = "is_enabled", nullable = false, columnDefinition = "BIT(1) default 1")
     private boolean enabled;
 
+    @OneToMany(targetEntity = Performance.class)
+//    @JoinTable(name = "performance", joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},
+//            inverseJoinColumns=@JoinColumn(name = "id"))
+//    @JoinColumn(name = "id")
+//    @Column(insertable = false, updatable = false)
+    @JoinColumn(name = "event_id")
+    private List<Performance> performanceList;
+
 }

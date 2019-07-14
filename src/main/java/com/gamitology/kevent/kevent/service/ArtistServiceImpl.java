@@ -29,7 +29,7 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Artist updateArtist(Long id, UpdateArtistRequest updateArtistRequest) {
+    public Artist updateArtist(Integer id, UpdateArtistRequest updateArtistRequest) {
         Artist artist = artistRepository.findById(id).get();
         if (artist == null) {
             return null;
@@ -48,7 +48,7 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Artist getArtistById(long id) {
+    public Artist getArtistById(Integer id) {
         return artistRepository.findById(id).get();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ArtistService {
     Optional<Artist> getArtistByName(String name);
     Artist addArtist(ArtistDto artistDto);
-    Artist updateArtist(Long id, UpdateArtistRequest updateArtistRequest);
+    Artist updateArtist(Integer id, UpdateArtistRequest updateArtistRequest);
     List<Artist> getAllArtists();
-    Artist getArtistById(long id);
+    Artist getArtistById(Integer id);
 }

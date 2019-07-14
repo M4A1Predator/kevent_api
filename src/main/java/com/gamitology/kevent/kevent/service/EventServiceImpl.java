@@ -2,23 +2,25 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
+import com.gamitology.kevent.kevent.dto.request.PerformTimeRequest;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.dto.response.EventArtistResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
+import com.gamitology.kevent.kevent.dto.response.PerformDateTime;
 import com.gamitology.kevent.kevent.entity.Artist;
 import com.gamitology.kevent.kevent.entity.Event;
 import com.gamitology.kevent.kevent.entity.EventArtist;
+import com.gamitology.kevent.kevent.entity.Performance;
 import com.gamitology.kevent.kevent.repository.EventArtistRepository;
 import com.gamitology.kevent.kevent.repository.EventRepository;
-import org.apache.logging.log4j.core.util.FileUtils;
+import com.gamitology.kevent.kevent.repository.PerformanceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +47,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PerformanceRepository performanceRepository;
+
     @Value("${upload_path}")
     private String uploadPath;
 
@@ -65,6 +70,7 @@ public class EventServiceImpl implements EventService {
             EventResponse eventResponse = new EventResponse();
             modelMapper.map(event, eventResponse);
 
+            // artists
             List<EventArtistResponse> earList = new ArrayList<>();
             for (EventArtist ea :
                     event.getEventArtists()) {
@@ -76,8 +82,16 @@ public class EventServiceImpl implements EventService {
 
                 earList.add(ear);
             }
-
             eventResponse.setEventArtistList(earList);
+
+            // perform time
+            List<PerformDateTime> performDateTimes = event.getPerformanceList().stream().map(p -> {
+                PerformDateTime performDateTime = new PerformDateTime();
+                performDateTime.setDatetime(p.getPerformTime());
+                performDateTime.setNote(p.getNote());
+                return performDateTime;
+            }).collect(Collectors.toList());
+            eventResponse.setPerformDateTimeList(performDateTimes);
 
             eventResponseList.add(eventResponse);
         }
@@ -85,8 +99,40 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getEventById(long id) {
-        return eventRepository.findById(id).orElse(null);
+    public EventResponse getEventById(Integer id) {
+        Event event = eventRepository.findByIdAndEnabledTrue(id).orElse(null);
+        if (event == null || !event.isEnabled()) {
+            return null;
+        }
+
+        // map
+        EventResponse eventResponse = new EventResponse();
+        modelMapper.map(event, eventResponse);
+
+        // artists
+        List<EventArtistResponse> earList = new ArrayList<>();
+        for (EventArtist ea :
+                event.getEventArtists()) {
+            EventArtistResponse ear = new EventArtistResponse();
+            ear.setArtistId((int) ea.getArtist().getId());
+            ear.setName(ea.getArtist().getName());
+            ear.setDetail(ea.getArtist().getDetail());
+            ear.setNote(ea.getNote());
+
+            earList.add(ear);
+        }
+        eventResponse.setEventArtistList(earList);
+
+        // perform time
+        List<PerformDateTime> performDateTimes = event.getPerformanceList().stream().map(p -> {
+            PerformDateTime performDateTime = new PerformDateTime();
+            performDateTime.setDatetime(p.getPerformTime());
+            performDateTime.setNote(p.getNote());
+            return performDateTime;
+        }).collect(Collectors.toList());
+        eventResponse.setPerformDateTimeList(performDateTimes);
+
+        return eventResponse;
     }
 
     @Transactional
@@ -94,13 +140,12 @@ public class EventServiceImpl implements EventService {
     public Event addEvent(EventDto eventDto) {
         Event event = modelMapper.map(eventDto, Event.class);
         event.setEnabled(true);
-        Event savedEvent = eventRepository.save(event);
-        return savedEvent;
+        return eventRepository.save(event);
     }
 
     @Transactional
     @Override
-    public Event updateEvent(long id, UpdateEventRequest updateEventRequest) {
+    public Event updateEvent(Integer id, UpdateEventRequest updateEventRequest) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event == null) {
             return null;
@@ -109,16 +154,30 @@ public class EventServiceImpl implements EventService {
         event.setName(updateEventRequest.getName());
         event.setDescription(updateEventRequest.getDescription());
         event.setLocation(updateEventRequest.getLocation());
-        event.setPerformTime(updateEventRequest.getPerformTime());
         event.setTicketStartTime(updateEventRequest.getTicketStartTime());
         event.setTicketEndTime(updateEventRequest.getTicketEndTime());
-        Event savedEvent = eventRepository.save(event);
-        return savedEvent;
+
+        // save perform time
+        // remove old perform times
+        performanceRepository.removeByEventId(event.getId());
+
+        // save
+        List<Performance> performances = new ArrayList<>();
+        for (PerformTimeRequest p : updateEventRequest.getPerformDateTimeList()) {
+            Performance performance = new Performance();
+            performance.setEventId(event.getId());
+            performance.setPerformTime(p.getDatetime());
+            performances.add(performance);
+        }
+        performanceRepository.saveAll(performances);
+
+        // Update event
+        return eventRepository.save(event);
     }
 
     @Transactional
     @Override
-    public Event updateArtists(long id, List<EventArtistDto> eventArtists) {
+    public Event updateArtists(Integer id, List<EventArtistDto> eventArtists) {
         // Get event
         Event event = eventRepository.findById(id).orElse(null);
 
@@ -167,7 +226,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event uploadCover(long eventId, MultipartFile cover) throws IOException {
+    public Event uploadCover(Integer eventId, MultipartFile cover) throws IOException {
         String fileExt = FilenameUtils.getExtension(cover.getOriginalFilename());
         String fileName = "event-" + eventId + "-cover." + fileExt;
 
@@ -199,7 +258,7 @@ public class EventServiceImpl implements EventService {
         return new FileInputStream(file);
     }
 
-    public Event disableEvent(long eventId) {
+    public Event disableEvent(Integer eventId) {
         Event event = eventRepository.findById(eventId).orElse(null);
         if(event == null) {
             return null;
@@ -211,7 +270,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventResponse getEventPublic(Integer eventId) {
 
-        Event event = eventRepository.findById(eventId).orElse(null);
+        Event event = eventRepository.findByIdAndEnabledTrue(eventId).orElse(null);
         if (event == null || !event.isEnabled()) {
             return null;
         }
@@ -220,6 +279,7 @@ public class EventServiceImpl implements EventService {
         EventResponse eventResponse = new EventResponse();
         modelMapper.map(event, eventResponse);
 
+        // artists
         List<EventArtistResponse> earList = new ArrayList<>();
         for (EventArtist ea :
                 event.getEventArtists()) {
@@ -231,8 +291,17 @@ public class EventServiceImpl implements EventService {
 
             earList.add(ear);
         }
-
         eventResponse.setEventArtistList(earList);
+
+        // perform time
+        List<PerformDateTime> performDateTimes = event.getPerformanceList().stream().map(p -> {
+            PerformDateTime performDateTime = new PerformDateTime();
+            performDateTime.setDatetime(p.getPerformTime());
+            performDateTime.setNote(p.getNote());
+            return performDateTime;
+        }).collect(Collectors.toList());
+        eventResponse.setPerformDateTimeList(performDateTimes);
+
         return eventResponse;
     }
 }

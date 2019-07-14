@@ -13,8 +13,9 @@ public class EventResponse {
     private String name;
     private String description;
     private String location;
-    @JsonFormat(pattern = DateFormatConstant.ISOString)
-    private Date performTime;
+
+    List<PerformDateTime> performTimes;
+
     @JsonFormat(pattern = DateFormatConstant.ISOString)
     private Date ticketStartTime;
     @JsonFormat(pattern = DateFormatConstant.ISOString)
@@ -22,4 +23,6 @@ public class EventResponse {
     private String coverPath;
 
     private List<EventArtistResponse> eventArtistList;
+
+    private List<PerformDateTime> performDateTimeList;
 }

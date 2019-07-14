@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EventArtistRepository extends JpaRepository<EventArtist, Long> {
+public interface EventArtistRepository extends JpaRepository<EventArtist, Integer> {
 
-    List<EventArtist> findByEventId(long eventId);
+    List<EventArtist> findByEventId(Integer eventId);
 
     @Query("delete from EventArtist ea where id = :id")
-    void deleteById(@Param("id") Long id);
+    void deleteById(@Param("id") Integer id);
 
 }
