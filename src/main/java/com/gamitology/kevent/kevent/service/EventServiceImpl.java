@@ -1,18 +1,18 @@
 package com.gamitology.kevent.kevent.service;
 
+import com.gamitology.kevent.kevent.constant.EventFileTypes;
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.PerformTimeRequest;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.dto.response.EventArtistResponse;
+import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
 import com.gamitology.kevent.kevent.dto.response.PerformDateTime;
-import com.gamitology.kevent.kevent.entity.Artist;
-import com.gamitology.kevent.kevent.entity.Event;
-import com.gamitology.kevent.kevent.entity.EventArtist;
-import com.gamitology.kevent.kevent.entity.Performance;
+import com.gamitology.kevent.kevent.entity.*;
 import com.gamitology.kevent.kevent.repository.EventArtistRepository;
+import com.gamitology.kevent.kevent.repository.EventImageFileRepository;
 import com.gamitology.kevent.kevent.repository.EventRepository;
 import com.gamitology.kevent.kevent.repository.PerformanceRepository;
 import org.modelmapper.ModelMapper;
@@ -49,6 +49,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private PerformanceRepository performanceRepository;
+
+    @Autowired
+    private EventImageFileRepository eventImageFileRepository;
 
     @Value("${upload_path}")
     private String uploadPath;
@@ -226,35 +229,56 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event uploadCover(Integer eventId, MultipartFile cover) throws IOException {
+    public EventImageFileResponse uploadCover(Integer eventId, MultipartFile cover) throws IOException {
         String fileExt = FilenameUtils.getExtension(cover.getOriginalFilename());
         String fileName = "event-" + eventId + "-cover." + fileExt;
+        String coverPath = "covers";
 
         InputStream is = cover.getInputStream();
-        String folderPath = uploadPath + "\\covers";
+        String folderPath = uploadPath + "\\" + coverPath;
         File folder = new File(folderPath);
 
         if (!folder.exists()) {
             folder.mkdir();
         }
 
+        // save file
         Files.copy(is, Paths.get(folderPath + "\\" + fileName),
                 StandardCopyOption.REPLACE_EXISTING);
         is.close();
 
         // get event
         Event event = eventRepository.findById(eventId).orElse(null);
-        event.setCoverPath(fileName);
-        return eventRepository.save(event);
+        if (event == null) {
+            return null;
+        }
+
+        // save file info
+        EventImageFile imageFile = eventImageFileRepository.findByEventIdAndFileType(eventId, EventFileTypes.COVER.typeName).orElse(null);
+        if (imageFile == null) {
+            imageFile = new EventImageFile();
+        }
+        String path = coverPath + "/" + fileName;
+        imageFile.setFileName(fileName);
+        imageFile.setFilePath(path);
+        imageFile.setFileExt(fileExt);
+        imageFile.setFileType(EventFileTypes.COVER.typeName);
+        imageFile.setEvent(event);
+        eventImageFileRepository.save(imageFile);
+
+        EventImageFileResponse response = new EventImageFileResponse();
+        response.setEventId(eventId);
+        response.setFileName(fileName);
+        return response;
     }
 
     @Override
     public FileInputStream getCover(int eventId) throws FileNotFoundException {
-        Optional<Event> event = eventRepository.findById(eventId);
-        if (!event.isPresent()) {
+        Optional<EventImageFile> coverFile = eventImageFileRepository.findByEventIdAndFileType(eventId, EventFileTypes.COVER.typeName);
+        if (!coverFile.isPresent()) {
             return null;
         }
-        File file = new File(uploadPath + "\\covers\\" + "event-" + eventId + "-cover.jpg");
+        File file = new File(uploadPath + "\\" + coverFile.get().getFilePath());
         return new FileInputStream(file);
     }
 

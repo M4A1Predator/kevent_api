@@ -4,6 +4,7 @@ import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
+import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
 import com.gamitology.kevent.kevent.dto.response.UploadCoverResponse;
 import com.gamitology.kevent.kevent.entity.Event;
@@ -87,9 +88,8 @@ public class EventController {
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity uploadCover(@PathVariable("eventId") int eventId, @RequestParam("cover") MultipartFile file) throws IOException {
         try {
-            Event event = eventService.uploadCover(eventId, file);
-            UploadCoverResponse response = new UploadCoverResponse();
-            response.setPath(event.getCoverPath());
+            EventImageFileResponse response= eventService.uploadCover(eventId, file);
+//            UploadCoverResponse response = new UploadCoverResponse();
             return ResponseEntity.ok(response);
         } catch (IOException ex) {
             return ResponseEntity.badRequest().build();

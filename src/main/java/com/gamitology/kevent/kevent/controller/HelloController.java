@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.security.Principal;
 
@@ -25,4 +26,10 @@ public class HelloController {
     @GetMapping("/admin")
     @PreAuthorize("hasAuthority('admin')")
     public String helloAdmin(){return "hello admin";}
+
+    @GetMapping("/flux")
+    @PreAuthorize("hasAuthority('admin')")
+    public Mono<Object> getMono() {
+        return Mono.just(new String("test mono"));
+    }
 }

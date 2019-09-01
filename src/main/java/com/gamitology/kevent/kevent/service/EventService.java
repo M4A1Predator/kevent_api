@@ -4,6 +4,7 @@ import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
+import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
 import com.gamitology.kevent.kevent.entity.Event;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ public interface EventService {
     Event addEvent(EventDto eventDto);
     Event updateEvent(Integer id, UpdateEventRequest eventDto);
     Event updateArtists(Integer id, List<EventArtistDto> eventArtists);
-    Event uploadCover(Integer eventId, MultipartFile cover) throws IOException;
+    EventImageFileResponse uploadCover(Integer eventId, MultipartFile cover) throws IOException;
     FileInputStream getCover(int eventId) throws FileNotFoundException;
     Event disableEvent(Integer eventId);
 
