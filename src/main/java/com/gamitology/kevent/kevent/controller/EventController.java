@@ -8,6 +8,9 @@ import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
 import com.gamitology.kevent.kevent.dto.response.UploadCoverResponse;
 import com.gamitology.kevent.kevent.entity.Event;
+import com.gamitology.kevent.kevent.entity.EventImageFile;
+import com.gamitology.kevent.kevent.service.EventCommandService;
+import com.gamitology.kevent.kevent.service.EventQueryService;
 import com.gamitology.kevent.kevent.service.EventService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,12 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private EventCommandService eventCommandService;
+
+    @Autowired
+    private EventQueryService eventQueryService;
 
     @GetMapping
     public List<Event> getEvents(){
@@ -120,5 +129,30 @@ public class EventController {
         }
 
         return ResponseEntity.ok(event);
+    }
+
+    @PutMapping("/{eventId}/images/zone")
+    public ResponseEntity uploadZoneImage(@PathVariable("eventId") int eventId, @RequestParam("file") MultipartFile file)
+            throws IOException {
+        EventImageFile imageFile = eventCommandService.uploadZoneImage(eventId, file);
+        if (imageFile == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        EventImageFileResponse response = new EventImageFileResponse();
+        response.setFileName(imageFile.getFileName());
+        response.setEventId(eventId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/{eventId}/images/zone", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody ResponseEntity<byte[]> getImageZone(@PathVariable("eventId") int eventId) throws IOException {
+        FileInputStream fis = eventQueryService.getZoneImage(eventId);
+        if(fis == null) {
+            return ResponseEntity.notFound().build();
+        }
+        byte[] img = IOUtils.toByteArray(fis);
+        fis.close();
+        return ResponseEntity.ok(img);
     }
 }

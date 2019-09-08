@@ -114,6 +114,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>kevent_api</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
