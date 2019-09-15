@@ -1,5 +1,6 @@
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
-ARG JAR_FILE
-COPY ${JAR_FILE} kevent_api.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/kevent_api.jar"]
+COPY target/*.jar app.jar
+RUN mkdir -p /var/www/app
+# ENTRYPOINT ["ping", "10.0.75.1"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=docker","/app.jar"]

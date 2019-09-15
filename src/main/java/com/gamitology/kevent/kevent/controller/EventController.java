@@ -1,5 +1,6 @@
 package com.gamitology.kevent.kevent.controller;
 
+import com.gamitology.kevent.kevent.KeventApplication;
 import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
@@ -13,6 +14,8 @@ import com.gamitology.kevent.kevent.service.EventCommandService;
 import com.gamitology.kevent.kevent.service.EventQueryService;
 import com.gamitology.kevent.kevent.service.EventService;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +33,8 @@ import java.util.List;
 @RequestMapping("/events")
 @RestController
 public class EventController {
+
+    private static final Logger logger = LogManager.getLogger(EventController.class);
 
     @Autowired
     private EventService eventService;
@@ -64,13 +69,6 @@ public class EventController {
     public ResponseEntity<EventResponse> getEventById(@PathVariable("eventId") Integer eventid) {
         return ResponseEntity.ok(eventService.getEventById(eventid));
     }
-
-//    @PutMapping("/{eventId}")
-//    @PreAuthorize("hasAuthority('admin')")
-//    public ResponseEntity<Event> updateEventById(@PathVariable("eventId") long eventId, @Valid @RequestBody EventDto eventDto) {
-//        Event savedEvent = eventService.updateEvent(eventId, eventDto);
-//        return ResponseEntity.ok(savedEvent);
-//    }
 
     @PostMapping
     @PreAuthorize("hasAuthority('admin')")
@@ -117,10 +115,12 @@ public class EventController {
             fis.close();
             return ResponseEntity.ok(img);
         } catch (FileNotFoundException ex) {
+            logger.error(ex.getMessage(), ex);
             return ResponseEntity.notFound().build();
         }
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @DeleteMapping("/{eventId}")
     public ResponseEntity deleteEvent(@PathVariable("eventId") int eventId) {
         Event event = eventService.disableEvent(eventId);
@@ -131,6 +131,7 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @PutMapping("/{eventId}/images/zone")
     public ResponseEntity uploadZoneImage(@PathVariable("eventId") int eventId, @RequestParam("file") MultipartFile file)
             throws IOException {
