@@ -31,7 +31,7 @@ public class EventQueryServiceImpl implements EventQueryService {
             return null;
         }
 
-        File file = new File(uploadPath + "\\" + imageFile.getFilePath());
+        File file = new File(uploadPath + "/" + imageFile.getFilePath());
         return new FileInputStream(file);
     }
 }

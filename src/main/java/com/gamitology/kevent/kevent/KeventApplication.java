@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -17,7 +18,7 @@ import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.TimeZone;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {JacksonAutoConfiguration.class})
 public class KeventApplication {
 
 	public static void main(String[] args) {

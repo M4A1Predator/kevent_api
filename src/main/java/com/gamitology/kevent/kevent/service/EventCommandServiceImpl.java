@@ -35,7 +35,7 @@ public class EventCommandServiceImpl implements EventCommandService {
         String parentPath = "zones";
 
         InputStream is = file.getInputStream();
-        String folderPath = uploadPath + "\\" + parentPath;
+        String folderPath = uploadPath + "/" + parentPath;
         File folder = new File(folderPath);
 
         if (!folder.exists()) {
@@ -43,7 +43,7 @@ public class EventCommandServiceImpl implements EventCommandService {
         }
 
         // save file
-        Files.copy(is, Paths.get(folderPath + "\\" + fileName),
+        Files.copy(is, Paths.get(folderPath + "/" + fileName),
                 StandardCopyOption.REPLACE_EXISTING);
         is.close();
 

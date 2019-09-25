@@ -65,7 +65,9 @@ public class EventServiceImpl implements EventService {
 
         Pageable pageable = PageRequest.of(searchEventRequest.getPage() - 1, searchEventRequest.getPageSize());
 
-        Page<Event> eventPage = eventRepository.findByEnabledAndNameContaining(true, "", pageable);
+        Page<Event> eventPage = eventRepository.findByEnabledAndNameContainingIgnoreCase(
+                true, searchEventRequest.getQ(), pageable
+        );
         List<Event> eventList = eventPage.get().collect(Collectors.toList());
         List<EventResponse> eventResponseList = new ArrayList<>();
         for (Event event :
@@ -235,7 +237,7 @@ public class EventServiceImpl implements EventService {
         String coverPath = "covers";
 
         InputStream is = cover.getInputStream();
-        String folderPath = uploadPath + "\\" + coverPath;
+        String folderPath = uploadPath + "/" + coverPath;
         File folder = new File(folderPath);
 
         if (!folder.exists()) {
@@ -243,7 +245,7 @@ public class EventServiceImpl implements EventService {
         }
 
         // save file
-        Files.copy(is, Paths.get(folderPath + "\\" + fileName),
+        Files.copy(is, Paths.get(folderPath + "/" + fileName),
                 StandardCopyOption.REPLACE_EXISTING);
         is.close();
 
@@ -278,7 +280,7 @@ public class EventServiceImpl implements EventService {
         if (!coverFile.isPresent()) {
             return null;
         }
-        File file = new File(uploadPath + "\\" + coverFile.get().getFilePath());
+        File file = new File(uploadPath + "/" + coverFile.get().getFilePath());
         return new FileInputStream(file);
     }
 
