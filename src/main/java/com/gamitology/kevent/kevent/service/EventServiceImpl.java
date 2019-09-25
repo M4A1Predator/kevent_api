@@ -6,10 +6,7 @@ import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.PerformTimeRequest;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
-import com.gamitology.kevent.kevent.dto.response.EventArtistResponse;
-import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
-import com.gamitology.kevent.kevent.dto.response.EventResponse;
-import com.gamitology.kevent.kevent.dto.response.PerformDateTime;
+import com.gamitology.kevent.kevent.dto.response.*;
 import com.gamitology.kevent.kevent.entity.*;
 import com.gamitology.kevent.kevent.repository.EventArtistRepository;
 import com.gamitology.kevent.kevent.repository.EventImageFileRepository;
@@ -21,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,9 +59,10 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByEnabled(true);
     }
 
-    public List<EventResponse> getEventsPublic(SearchEventRequest searchEventRequest) {
+    public EventPageResponse getEventsPublic(SearchEventRequest searchEventRequest) {
 
-        Pageable pageable = PageRequest.of(searchEventRequest.getPage() - 1, searchEventRequest.getPageSize());
+        Sort.Order orderPerformTime = Sort.Order.desc("performTime");
+        Pageable pageable = PageRequest.of(searchEventRequest.getPage() - 1, searchEventRequest.getPerPage(), Sort.by(orderPerformTime));
 
         Page<Event> eventPage = eventRepository.findByEnabledAndNameContainingIgnoreCase(
                 true, searchEventRequest.getQ(), pageable
@@ -100,7 +99,11 @@ public class EventServiceImpl implements EventService {
 
             eventResponseList.add(eventResponse);
         }
-        return eventResponseList;
+        EventPageResponse response = new EventPageResponse();
+        response.setPage(searchEventRequest.getPage());
+        response.setData(eventResponseList);
+        response.setTotalPage(eventPage.getTotalPages());
+        return response;
     }
 
     @Override

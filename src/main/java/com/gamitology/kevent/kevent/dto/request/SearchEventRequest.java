@@ -6,7 +6,7 @@ import lombok.Data;
 public class SearchEventRequest {
 
     private Integer page = 1;
-    private Integer pageSize = 7;
+    private Integer perPage = 7;
 
     private String q = "";
 }

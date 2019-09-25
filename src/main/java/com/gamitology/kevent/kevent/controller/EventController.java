@@ -6,6 +6,7 @@ import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
 import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
+import com.gamitology.kevent.kevent.dto.response.EventPageResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
 import com.gamitology.kevent.kevent.dto.response.UploadCoverResponse;
 import com.gamitology.kevent.kevent.entity.Event;
@@ -52,8 +53,8 @@ public class EventController {
 
     @GetMapping("/public")
     public ResponseEntity getEventsPublic(SearchEventRequest searchEventRequest) {
-        List<EventResponse> eventResponseList = eventService.getEventsPublic(searchEventRequest);
-        return ResponseEntity.ok(eventResponseList);
+        EventPageResponse response = eventService.getEventsPublic(searchEventRequest);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/public/{eventId}")
