@@ -1,9 +1,11 @@
 package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.constant.EventFileTypes;
+import com.gamitology.kevent.kevent.dto.request.ZoneDetailRequest;
 import com.gamitology.kevent.kevent.entity.Event;
 import com.gamitology.kevent.kevent.entity.EventImageFile;
 import com.gamitology.kevent.kevent.repository.EventImageFileRepository;
+import com.gamitology.kevent.kevent.repository.EventRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,9 +25,12 @@ public class EventCommandServiceImpl implements EventCommandService {
     private String uploadPath;
 
     private final EventImageFileRepository eventImageFileRepository;
+    private final EventRepository eventRepository;
 
-    public EventCommandServiceImpl(EventImageFileRepository eventImageFileRepository) {
+    public EventCommandServiceImpl(EventImageFileRepository eventImageFileRepository,
+                                   EventRepository eventRepository) {
         this.eventImageFileRepository = eventImageFileRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -59,5 +64,17 @@ public class EventCommandServiceImpl implements EventCommandService {
         event.setId(eventId);
         imageFile.setEvent(event);
         return eventImageFileRepository.save(imageFile);
+    }
+
+    @Override
+    public Event updateZoneDetail(int eventId, ZoneDetailRequest zoneDetailRequest) {
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event == null) {
+            return null;
+        }
+
+        event.setZoneDetail(zoneDetailRequest.getPriceDetail());
+
+        return eventRepository.save(event);
     }
 }

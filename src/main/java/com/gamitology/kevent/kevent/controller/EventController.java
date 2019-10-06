@@ -5,6 +5,7 @@ import com.gamitology.kevent.kevent.dto.EventDto;
 import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
 import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
 import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
+import com.gamitology.kevent.kevent.dto.request.ZoneDetailRequest;
 import com.gamitology.kevent.kevent.dto.response.EventImageFileResponse;
 import com.gamitology.kevent.kevent.dto.response.EventPageResponse;
 import com.gamitology.kevent.kevent.dto.response.EventResponse;
@@ -156,5 +157,12 @@ public class EventController {
         byte[] img = IOUtils.toByteArray(fis);
         fis.close();
         return ResponseEntity.ok(img);
+    }
+
+    @PutMapping("/{eventId}/zone")
+    public @ResponseBody ResponseEntity updateZoneDetail(@PathVariable("eventId") int eventId,
+                                                         @RequestBody ZoneDetailRequest request) {
+        eventCommandService.updateZoneDetail(eventId, request);
+        return ResponseEntity.ok().build();
     }
 }
