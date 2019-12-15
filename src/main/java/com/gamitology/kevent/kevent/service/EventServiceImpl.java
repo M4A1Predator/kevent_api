@@ -258,7 +258,7 @@ public class EventServiceImpl implements EventService {
             return null;
         }
 
-        // save file info
+        // save file info/
         EventImageFile imageFile = eventImageFileRepository.findByEventIdAndFileType(eventId, EventFileTypes.COVER.typeName).orElse(null);
         if (imageFile == null) {
             imageFile = new EventImageFile();
@@ -330,6 +330,9 @@ public class EventServiceImpl implements EventService {
             return performDateTime;
         }).collect(Collectors.toList());
         eventResponse.setPerformDateTimeList(performDateTimes);
+
+        // cover file
+
 
         return eventResponse;
     }

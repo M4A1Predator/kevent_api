@@ -17,4 +17,6 @@ public class Artist extends BaseEntity {
 
     @Column(name = "is_active")
     private boolean active;
+
+    private String coverPath;
 }
