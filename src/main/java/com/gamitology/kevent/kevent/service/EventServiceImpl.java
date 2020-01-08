@@ -2,16 +2,10 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.constant.EventFileTypes;
 import com.gamitology.kevent.kevent.dto.EventDto;
-import com.gamitology.kevent.kevent.dto.request.EventArtistDto;
-import com.gamitology.kevent.kevent.dto.request.PerformTimeRequest;
-import com.gamitology.kevent.kevent.dto.request.SearchEventRequest;
-import com.gamitology.kevent.kevent.dto.request.UpdateEventRequest;
+import com.gamitology.kevent.kevent.dto.request.*;
 import com.gamitology.kevent.kevent.dto.response.*;
 import com.gamitology.kevent.kevent.entity.*;
-import com.gamitology.kevent.kevent.repository.EventArtistRepository;
-import com.gamitology.kevent.kevent.repository.EventImageFileRepository;
-import com.gamitology.kevent.kevent.repository.EventRepository;
-import com.gamitology.kevent.kevent.repository.PerformanceRepository;
+import com.gamitology.kevent.kevent.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +44,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private EventImageFileRepository eventImageFileRepository;
+
+    @Autowired
+    private TicketSellingInfoRepository ticketSellingInfoRepository;
 
     @Value("${upload_path}")
     private String uploadPath;
@@ -169,6 +166,18 @@ public class EventServiceImpl implements EventService {
         // remove old perform times
         performanceRepository.removeByEventId(event.getId());
 
+        // save ticket selling info
+        for (TicketSellingRequest ticketSellingReq :
+                updateEventRequest.getTicketSellingList()) {
+            TicketSellingInfo ticketSellingInfo = new TicketSellingInfo();
+            ticketSellingInfo.setEventId(event.getId());
+            ticketSellingInfo.setApproach(ticketSellingReq.getApproach());
+            ticketSellingInfo.setStartDatetime(ticketSellingReq.getTicketStartTime());
+            ticketSellingInfo.setEndDatetime(ticketSellingReq.getTicketEndTime());
+            ticketSellingInfo.setNote(ticketSellingReq.getNote());
+            ticketSellingInfoRepository.save(ticketSellingInfo);
+        }
+
         // save
         List<Performance> performances = new ArrayList<>();
         for (PerformTimeRequest p : updateEventRequest.getPerformDateTimeList()) {
@@ -178,6 +187,8 @@ public class EventServiceImpl implements EventService {
             performances.add(performance);
         }
         performanceRepository.saveAll(performances);
+
+        event.setModifiedAt(new Date());
 
         // Update event
         return eventRepository.save(event);

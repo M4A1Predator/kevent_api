@@ -27,4 +27,6 @@ public class UpdateEventRequest {
 
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatConstant.ISOString)
     private Date ticketEndTime;
+
+    private List<TicketSellingRequest> ticketSellingList;
 }
