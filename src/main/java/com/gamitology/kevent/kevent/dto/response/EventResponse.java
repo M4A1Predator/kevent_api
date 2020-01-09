@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gamitology.kevent.kevent.constant.DateFormatConstant;
+import com.gamitology.kevent.kevent.dto.TicketSellingDto;
 import lombok.Data;
 
 import java.util.Date;
@@ -26,4 +27,6 @@ public class EventResponse {
     private List<EventArtistResponse> eventArtistList;
 
     private List<PerformDateTime> performDateTimeList;
+
+    private List<TicketSellingDto> ticketSellingList;
 }

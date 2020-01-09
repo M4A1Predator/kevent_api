@@ -48,4 +48,8 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "event_id")
     private List<Performance> performanceList;
 
+    @OneToMany(targetEntity = TicketSellingInfo.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "eventId")
+    private List<TicketSellingInfo> ticketSellingInfoList;
+
 }

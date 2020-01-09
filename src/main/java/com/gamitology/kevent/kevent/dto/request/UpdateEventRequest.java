@@ -1,12 +1,7 @@
 package com.gamitology.kevent.kevent.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gamitology.kevent.kevent.config.CustomDateSerializer;
-import com.gamitology.kevent.kevent.constant.DateFormatConstant;
+import com.gamitology.kevent.kevent.dto.TicketSellingDto;
 import lombok.Data;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -28,5 +23,5 @@ public class UpdateEventRequest {
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateFormatConstant.ISOString)
     private Date ticketEndTime;
 
-    private List<TicketSellingRequest> ticketSellingList;
+    private List<TicketSellingDto> ticketSellingList;
 }

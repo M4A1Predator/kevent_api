@@ -2,6 +2,7 @@ package com.gamitology.kevent.kevent.service;
 
 import com.gamitology.kevent.kevent.constant.EventFileTypes;
 import com.gamitology.kevent.kevent.dto.EventDto;
+import com.gamitology.kevent.kevent.dto.TicketSellingDto;
 import com.gamitology.kevent.kevent.dto.request.*;
 import com.gamitology.kevent.kevent.dto.response.*;
 import com.gamitology.kevent.kevent.entity.*;
@@ -137,6 +138,17 @@ public class EventServiceImpl implements EventService {
         }).collect(Collectors.toList());
         eventResponse.setPerformDateTimeList(performDateTimes);
 
+        // ticket selling
+        List<TicketSellingDto> tickSellingListRes = event.getTicketSellingInfoList().stream().map(t -> {
+            TicketSellingDto ticketSelling = new TicketSellingDto();
+            ticketSelling.setApproach(t.getApproach());
+            ticketSelling.setNote(t.getNote());
+            ticketSelling.setTicketStartTime(t.getStartDatetime());
+            ticketSelling.setTicketEndTime(t.getEndDatetime());
+            return ticketSelling;
+        }).collect(Collectors.toList());
+        eventResponse.setTicketSellingList(tickSellingListRes);
+
         return eventResponse;
     }
 
@@ -166,16 +178,23 @@ public class EventServiceImpl implements EventService {
         // remove old perform times
         performanceRepository.removeByEventId(event.getId());
 
-        // save ticket selling info
-        for (TicketSellingRequest ticketSellingReq :
-                updateEventRequest.getTicketSellingList()) {
-            TicketSellingInfo ticketSellingInfo = new TicketSellingInfo();
-            ticketSellingInfo.setEventId(event.getId());
-            ticketSellingInfo.setApproach(ticketSellingReq.getApproach());
-            ticketSellingInfo.setStartDatetime(ticketSellingReq.getTicketStartTime());
-            ticketSellingInfo.setEndDatetime(ticketSellingReq.getTicketEndTime());
-            ticketSellingInfo.setNote(ticketSellingReq.getNote());
-            ticketSellingInfoRepository.save(ticketSellingInfo);
+        // ticket selling info
+        if (updateEventRequest.getTicketSellingList() != null) {
+            // clear old data
+            ticketSellingInfoRepository.removeByEventId(event.getId());
+
+            // save data
+            for (TicketSellingDto ticketSellingReq :
+                    updateEventRequest.getTicketSellingList()) {
+                TicketSellingInfo ticketSellingInfo = new TicketSellingInfo();
+                ticketSellingInfo.setEventId(event.getId());
+                ticketSellingInfo.setApproach(ticketSellingReq.getApproach());
+                ticketSellingInfo.setStartDatetime(ticketSellingReq.getTicketStartTime());
+                ticketSellingInfo.setEndDatetime(ticketSellingReq.getTicketEndTime());
+                ticketSellingInfo.setNote(ticketSellingReq.getNote());
+                ticketSellingInfo.setCreatedAt(new Date());
+                ticketSellingInfoRepository.save(ticketSellingInfo);
+            }
         }
 
         // save
@@ -341,6 +360,17 @@ public class EventServiceImpl implements EventService {
             return performDateTime;
         }).collect(Collectors.toList());
         eventResponse.setPerformDateTimeList(performDateTimes);
+
+        // ticket selling
+        List<TicketSellingDto> tickSellingListRes = event.getTicketSellingInfoList().stream().map(t -> {
+            TicketSellingDto ticketSelling = new TicketSellingDto();
+            ticketSelling.setApproach(t.getApproach());
+            ticketSelling.setNote(t.getNote());
+            ticketSelling.setTicketStartTime(t.getStartDatetime());
+            ticketSelling.setTicketEndTime(t.getEndDatetime());
+            return ticketSelling;
+        }).collect(Collectors.toList());
+        eventResponse.setTicketSellingList(tickSellingListRes);
 
         // cover file
 
