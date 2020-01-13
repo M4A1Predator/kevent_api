@@ -95,6 +95,17 @@ public class EventServiceImpl implements EventService {
             }).collect(Collectors.toList());
             eventResponse.setPerformDateTimeList(performDateTimes);
 
+            // ticket selling
+            List<TicketSellingDto> ticketSellingDtoList = event.getTicketSellingInfoList().stream().map(t -> {
+                TicketSellingDto ticketSellingDto = new TicketSellingDto();
+                ticketSellingDto.setApproach(t.getApproach());
+                ticketSellingDto.setNote(t.getNote());
+                ticketSellingDto.setTicketStartTime(t.getStartDatetime());
+                ticketSellingDto.setTicketEndTime(t.getEndDatetime());
+                return ticketSellingDto;
+            }).collect(Collectors.toList());
+            eventResponse.setTicketSellingList(ticketSellingDtoList);
+
             eventResponseList.add(eventResponse);
         }
         EventPageResponse response = new EventPageResponse();
