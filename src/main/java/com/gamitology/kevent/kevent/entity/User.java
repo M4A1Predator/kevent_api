@@ -76,4 +76,8 @@ public class User implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
 }
