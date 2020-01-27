@@ -7,5 +7,6 @@ public class UserRegisDto {
 
     private String userName;
     private String password;
+    private String key;
 
 }

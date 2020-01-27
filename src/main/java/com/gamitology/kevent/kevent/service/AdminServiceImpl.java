@@ -6,11 +6,13 @@ import com.gamitology.kevent.kevent.entity.Role;
 import com.gamitology.kevent.kevent.entity.User;
 import com.gamitology.kevent.kevent.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -22,9 +24,22 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Value("${regis_key}")
+    private String regisKey;
+
     @Transactional
     public User registerAdmin(UserRegisDto userDto) throws Exception {
         User user = new User();
+
+        // Check has admin
+        if (!userRepository.findByRolesIdIn(Collections.singletonList(1)).isEmpty()) {
+            throw new Exception("unable");
+        }
+
+        // Check key
+        if (!userDto.getKey().equals(regisKey)) {
+            throw new Exception("invalid key");
+        }
 
         // Check duplicate name
         if (usernameExist(userDto.getUserName())) {
