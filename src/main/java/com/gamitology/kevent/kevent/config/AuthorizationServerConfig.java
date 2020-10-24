@@ -40,6 +40,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Value("${oauth.client_id}")
     private String CLIENT_ID;
 
+    @Value("${client_secret_encrypted}")
+    private String CLIENT_SECRET_ENCRYPTED;
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security.passwordEncoder(passwordEncoder);
@@ -50,7 +53,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         clients
                 .inMemory()
                 .withClient(CLIENT_ID)
-                .secret("{bcrypt}$2a$10$lqOoJ0TvqqcavISclcHxZeGQsZ7htzSgxthu.u2js.ORJOyDrDn3K")
+                .secret(CLIENT_SECRET_ENCRYPTED)
+//                .secret("{bcrypt}$2a$10$lqOoJ0TvqqcavISclcHxZeGQsZ7htzSgxthu.u2js.ORJOyDrDn3K")
+//                .secret("{bcrypt}$2a$10$pNn1twEPtPC11za/iyJeg./HI1czB4qIC0Eias6ZfyTJqiVJ17B2q")
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
                 .scopes("read", "write", "trust")
                 .accessTokenValiditySeconds(1*60*60)

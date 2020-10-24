@@ -12,9 +12,9 @@ public class PasswordTest {
     @Test
     public void checkPassword() {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode("password");
+        String encodedPassword = passwordEncoder.encode("secret");
         System.out.println(encodedPassword);
-        boolean result = passwordEncoder.matches("password", encodedPassword);
+        boolean result = passwordEncoder.matches("secret", encodedPassword);
         Assert.assertTrue(result);
     }
 }
