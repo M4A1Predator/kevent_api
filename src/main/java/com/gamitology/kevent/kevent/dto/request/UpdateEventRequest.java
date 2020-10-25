@@ -11,6 +11,7 @@ public class UpdateEventRequest {
     private String name;
     private String description;
     private String location;
+    private String onlineDetail;
 
 //    @JsonFormat(pattern = DateFormatConstant.ISOString)
 //    @JsonSerialize(using = CustomDateSerializer.class)

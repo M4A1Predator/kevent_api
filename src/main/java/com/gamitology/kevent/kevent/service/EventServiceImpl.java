@@ -184,6 +184,9 @@ public class EventServiceImpl implements EventService {
         event.setLocation(updateEventRequest.getLocation());
         event.setTicketStartTime(updateEventRequest.getTicketStartTime());
         event.setTicketEndTime(updateEventRequest.getTicketEndTime());
+        if (updateEventRequest.getOnlineDetail() != null && !updateEventRequest.getOnlineDetail().trim().isEmpty()) {
+            event.setOnlineDetail(updateEventRequest.getOnlineDetail());
+        }
 
         // save perform time
         // remove old perform times

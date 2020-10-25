@@ -40,6 +40,8 @@ public class Event extends BaseEntity {
 
     private String zoneDetail;
 
+    private String onlineDetail;
+
     @OneToMany(targetEntity = Performance.class)
 //    @JoinTable(name = "performance", joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},
 //            inverseJoinColumns=@JoinColumn(name = "id"))

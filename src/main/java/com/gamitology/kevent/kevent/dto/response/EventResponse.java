@@ -15,6 +15,7 @@ public class EventResponse {
     private String description;
     private String location;
     private String zoneDetail;
+    private String onlineDetail;
 
     List<PerformDateTime> performTimes;
 

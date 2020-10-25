@@ -7,6 +7,7 @@ public class EventDto {
     private String name;
     private String description;
     private String location;
+    private String onlineDetail;
     private Date performTime;
     private Date ticketStartTime;
     private Date ticketEndTime;
